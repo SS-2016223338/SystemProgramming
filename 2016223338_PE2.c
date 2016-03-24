@@ -76,7 +76,8 @@ void show_file_info( char *filename, struct stat *info_p) {
 	char *uid_to_name(), *ctime(), *gid_to_name(), *filemode();
 	void mode_to_letters();
 	char modestr[11];
-	
+	char *name;
+
 	mode_to_letters( info_p->st_mode, modestr );
 	
 	printf("%s", modestr);
@@ -85,7 +86,12 @@ void show_file_info( char *filename, struct stat *info_p) {
 	printf("%-8s ", gid_to_name(info_p->st_gid));
 	printf("%8ld ", (long)info_p->st_size);
 	printf("%.12s ", 4 + ctime(&info_p->st_mtime));
-	printf("%s\n", filename);
+	
+	if (strpbrk(filename, "/")) {
+		name = strtok(filename, "/");
+		name = strtok(NULL, "/");
+		printf("%s\n", name);
+	} else printf("%s\n", filename);
 }
 
 void mode_to_letters( int mode, char str[] ) {
