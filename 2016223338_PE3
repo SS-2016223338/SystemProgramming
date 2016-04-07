@@ -23,17 +23,16 @@ void printpathto( ino_t this_inode ) {
 	int j = 0;
 
 	my_inode = this_inode;
-	while( get_inode("..") != this_inode ) {
-		if (!strcmp(its_name, "home")) break;
-			chdir("..");
+	while( get_inode("..") != my_inode ) {
+		chdir("..");
 	
-			inum_to_name( my_inode, its_name, BUFSIZ );
+		inum_to_name( my_inode, its_name, BUFSIZ );
 	
-			my_inode = get_inode(".");
+		my_inode = get_inode(".");
 	
-	//		printf( "%s", its_name );
-			strcpy(text[i],its_name);
-			i++;
+	//	printf( "%s", its_name );
+		strcpy(text[i],its_name);
+		i++;
 	}
 
 	for (j=i-1; j>=0; j--) {
