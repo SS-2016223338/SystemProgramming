@@ -1,0 +1,21 @@
+#include <stdio.h>
+#include <signal.h>
+#include <string.h>
+
+char str[1];
+
+main () {
+	void f(int);
+	int i;
+	signal(SIGINT, f);
+	for(i=0; i<5; i++) {
+		if (!strcmp(str, "y")) break;
+		printf("hellow\n");
+		sleep(1);
+	}
+}
+
+void f(int signum) {
+	printf("Interrupted! OK to Quit (y/n)");
+	scanf("%s" , str);
+}
