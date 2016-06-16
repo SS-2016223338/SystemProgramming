@@ -1,0 +1,39 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+#define oops(m, x) { perror(m), exit(x); }
+
+int main(int argc, char* argv[]) {
+	int pipe1[2], pipe2[2], pid1, pid2;
+
+	if (argc != 4) oops("not match argc\n", 1);
+	if (pipe(pipe1) == -1) oops("Cannot get a pipe" , 1);
+	if ((pid1 = fork() ) == -1) oops("Fail to fork" , 1);
+	
+	if (pid1 > 0) {
+		close(pipe1[1] );
+		dup2(pipe1[0], 0);
+		close(pipe1[0]);
+		execlp(argv[3], argv[3], NULL);
+	} else {
+		if (pipe(pipe2) == -1) oops("Cannot get a pipe", 1);
+		if ((pid2 = fork()) == -1) oops("Fail to fork", 1);
+		if (pid2 > 0) {
+			close(pipe1[0]);
+			dup2(pipe1[1], 1 );
+			close(pipe1[1]);
+
+			close(pipe2[1]);
+			dup2(pipe2[0], 0);
+			close(pipe2[0]);
+			execlp(argv[2], argv[2], NULL);
+		} else {
+			close(pipe2[0]);
+			dup2(pipe2[1], 1);
+			close(pipe2[1]);
+			execlp(argv[1], argv[1], NULL);
+		}
+	}
+	return 0;
+}
